@@ -10,13 +10,19 @@
           # Common system modules...
         ];
       };
+      airGapped = false;
+      secure = false;
     in {
       iso = nixos.lib.nixosSystem {
         inherit (base) system;
         modules = base.modules ++ [
           "${nixos}/nixos/modules/installer/cd-dvd/installation-cd-graphical-plasma5.nix"
           ./configuration.nix
-        ];
+          ./gpg.nix
+          ./sshd.nix
+          ./fonts.nix
+        ] ++ nixos.lib.optional (airGapped) ./airgapped.nix
+          ++ nixos.lib.optional (airGapped || secure) ./secure.nix;
       };
     };
   };
