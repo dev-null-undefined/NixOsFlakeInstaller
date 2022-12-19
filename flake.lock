@@ -1,12 +1,44 @@
 {
   "nodes": {
-    "nixos": {
+    "dotfiles-config": {
+      "flake": false,
       "locked": {
-        "lastModified": 1670929434,
-        "narHash": "sha256-n5UBO6XBV4h3TB7FYu2yAuNQMEYOrQyKeODUwKe06ow=",
+        "lastModified": 1671452198,
+        "narHash": "sha256-AnqF0oNCUQTYsV6Y0jyGN+PwOOMnW/bvG+p47Zmav9s=",
+        "owner": "dev-null-undefined",
+        "repo": "DotFiles",
+        "rev": "d2b099c21866082c0ed25f4b9b6ddf99ef0f32fb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dev-null-undefined",
+        "repo": "DotFiles",
+        "type": "github"
+      }
+    },
+    "nixos-config": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1671279694,
+        "narHash": "sha256-4Fu78VQL8GUpTLY7xZDGsxCs8m28SegxTTM07chuWto=",
+        "owner": "dev-null-undefined",
+        "repo": "NixOs",
+        "rev": "b2a0b96f11c5c5463fcdf715cc59a47aca900ab2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dev-null-undefined",
+        "repo": "NixOs",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1671359686,
+        "narHash": "sha256-3MpC6yZo+Xn9cPordGz2/ii6IJpP2n8LE8e/ebUXLrs=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "1710ed1f6f8ceb75cf7d1cf55ee0cc21760e1c7a",
+        "rev": "04f574a1c0fde90b51bf68198e2297ca4e7cccf4",
         "type": "github"
       },
       "original": {
@@ -18,7 +50,9 @@
     },
     "root": {
       "inputs": {
-        "nixos": "nixos"
+        "dotfiles-config": "dotfiles-config",
+        "nixos-config": "nixos-config",
+        "nixpkgs": "nixpkgs"
       }
     }
   },

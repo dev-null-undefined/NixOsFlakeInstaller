@@ -1,7 +1,18 @@
 {
   description = "NixosFlakeInstaller";
-  inputs.nixos.url = "github:nixos/nixpkgs/nixos-unstable";
-  outputs = { self, nixos }: {
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    dotfiles-config = { 
+      url = "github:dev-null-undefined/DotFiles";
+      flake = false;
+    };
+    nixos-config = {
+      url = "github:dev-null-undefined/NixOs";
+      flake = false;
+    };
+  };
+  outputs = { self, nixpkgs, dotfiles-config, nixos-config }: {
     nixosConfigurations = let
       # Shared base configuration.
       base = {
@@ -12,17 +23,20 @@
       };
       airGapped = false;
       secure = false;
-    in {
-      iso = nixos.lib.nixosSystem {
+    in with nixpkgs.lib; {
+      iso = nixpkgs.lib.nixosSystem {
         inherit (base) system;
+
+        specialArgs = { inherit dotfiles-config nixos-config; };
+
         modules = base.modules ++ [
-          "${nixos}/nixos/modules/installer/cd-dvd/installation-cd-graphical-plasma5.nix"
+          "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-graphical-plasma5.nix"
           ./configuration.nix
           ./gpg.nix
           ./sshd.nix
           ./fonts.nix
-        ] ++ nixos.lib.optional (airGapped) ./airgapped.nix
-          ++ nixos.lib.optional (airGapped || secure) ./secure.nix;
+        ] ++ optional (airGapped) ./airgapped.nix
+          ++ optional (airGapped || secure) ./secure.nix;
       };
     };
   };

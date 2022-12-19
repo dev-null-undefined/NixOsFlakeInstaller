@@ -1,13 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, nixos-config, dotfiles-config, ... }:
 
 let
   owner = "dev-null-undefined";
-  DotFiles = pkgs.fetchFromGitHub {
-    inherit owner;
-    repo = "DotFiles";
-    rev = "master";
-    sha256 = "sha256-LnHmnltdfyLyZqDiHm44B3OObQ9ifCE2szki+pQWPj0=";
-  };
   DotFilesDependecies = with pkgs; [
     # ZSH
     # ------
@@ -50,12 +44,6 @@ let
     # ------
   ];
 
-  NixOsConfig = pkgs.fetchFromGitHub {
-    inherit owner;
-    repo = "NixOs";
-    rev = "master";
-    sha256 = "sha256-YlpuuHfVxEd2w1GiedQJl3rM5xuql2DV+/i2l6G1xFs=";
-  };
   NixOsDependecies = [ ];
 
   Dependecies = DotFilesDependecies ++ NixOsDependecies;
@@ -64,11 +52,11 @@ in {
   isoImage.isoBaseName = pkgs.lib.mkForce "nixos-${owner}";
 
   # use the latest Linux kernel
-  # boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # Needed for https://github.com/NixOS/nixpkgs/issues/58959 latest kernel and ZFS suppport
-  # boot.supportedFilesystems =
-  #  pkgs.lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" ];
+  boot.supportedFilesystems =
+    pkgs.lib.mkForce [ "btrfs" "reiserfs" "vfat" "f2fs" "xfs" "ntfs" "cifs" ];
 
   # Setup ssh services for remote access
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
@@ -94,8 +82,8 @@ in {
     mkdir -p ${DotFilesDir} ${NixOsConfigDir}
     #chown nixos ${DotFilesDir} ${NixOsConfigDir}
 
-    cp -R ${DotFiles}/{,.[^.],..?}* ${DotFilesDir}
-    cp -R ${NixOsConfig}/{,.[^.],..?}* ${NixOsConfigDir}
+    cp -R ${dotfiles-config}/{,.[^.],..?}* ${DotFilesDir}
+    cp -R ${nixos-config}/{,.[^.],..?}* ${NixOsConfigDir}
     echo 'magic() { rm ~/.zshrc && ${DotFilesDir}/scripts/copy_configs_reverse && ${DotFilesDir}/install.sh }' >> ${homeDir}/.zshrc
   '';
 
